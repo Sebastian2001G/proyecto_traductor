@@ -13,7 +13,7 @@ func main() {
 	app := fiber.New()
 	app.Use(cors.New()) //Se activan los cors para que se procesen las peticiones
 
-	app.Static("/", "./client/dist") //Se le asigna la ruta para el front
+	app.Static("/", "./client/public/dist") //Se le asigna la ruta para el front
 
 	app.Get("/users", func(c *fiber.Ctx) error {
 		return c.JSON(&fiber.Map{
