@@ -6,7 +6,7 @@ function App() {
   const [translation, setTranslation] = useState('')
 
   async function loadWords(){
-    const response = await fetch(import.meta.env.VITE_API + '/palabras')
+    const response = await fetch('/palabras')
     const data = await response.json()
     console.log(data)
   }
@@ -17,7 +17,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const response = await fetch(import.meta.env.VITE_API + '/palabra', {
+    const response = await fetch('/palabra', {
       method: 'POST',
       body: JSON.stringify({WordText: word, Translation: translation}),
       headers: {
