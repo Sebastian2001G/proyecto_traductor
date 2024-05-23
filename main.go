@@ -21,20 +21,24 @@ func main() {
 	}
 
 	app := fiber.New()
-
-	uri := os.Getenv("MONGODB_URI")
-	fmt.Println(uri)
-	if uri == "" {
-		panic("MONGODB_URI is not set")
-	}
-
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
-
+	opts := options.Client().ApplyURI("mongodb+srv://proyectotraductor62:t08kHYaPpvUmA03R@traductor.tabvz9q.mongodb.net/?retryWrites=true&w=majority&appName=Traductor").SetServerAPIOptions(serverAPI)
+	// Create a new client and connect to the server
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
 		panic(err)
 	}
+
+	defer func() {
+		if err = client.Disconnect(context.TODO()); err != nil {
+			panic(err)
+		}
+	}()
+	// Send a ping to confirm a successful connection
+	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
+		panic(err)
+	}
+	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
 
 	app.Use(cors.New()) //Se activan los cors para que se procesen las peticiones
 
