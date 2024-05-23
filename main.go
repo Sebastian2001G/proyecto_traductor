@@ -23,6 +23,7 @@ func main() {
 	app := fiber.New()
 
 	uri := os.Getenv("MONGODB_URI")
+	fmt.Println(uri)
 	if uri == "" {
 		panic("MONGODB_URI is not set")
 	}
