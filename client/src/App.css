@@ -17,7 +17,7 @@
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    scrollbar-width: 0;
+    scrollbar-width: none;
 }
 
 .container{
