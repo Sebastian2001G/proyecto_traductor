@@ -29,26 +29,9 @@ func main() {
 		panic(err)
 	}
 
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
-	// Send a ping to confirm a successful connection
-	if err := client.Database("admin").RunCommand(context.TODO(), bson.D{{"ping", 1}}).Err(); err != nil {
-		panic(err)
-	}
-	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
-
 	app.Use(cors.New()) //Se activan los cors para que se procesen las peticiones
 
 	app.Static("/", "./client/dist") //Se le asigna la ruta para el front
-
-	app.Get("/users", func(c *fiber.Ctx) error {
-		return c.JSON(&fiber.Map{
-			"data": "usuarios desde el backend",
-		})
-	})
 
 	app.Post("/palabra", func(c *fiber.Ctx) error {
 		var word models.Word
@@ -73,28 +56,57 @@ func main() {
 		})
 	})
 
-	app.Get("/palabras", func(c *fiber.Ctx) error {
-		var words []models.Word
+	app.Get("/buscar", func(c *fiber.Ctx) error {
+		palabra := c.Query("palabra")
+		if palabra == "" {
+			return c.Status(400).SendString("Missing query parameter: palabra")
+		}
+
 		coll := client.Database("gomongodb").Collection("words")
+		filter := bson.M{"WordText": palabra}
 
-		results, err := coll.Find(context.TODO(), bson.M{})
-
+		var result models.Word
+		err := coll.FindOne(context.TODO(), filter).Decode(&result)
 		if err != nil {
-			panic(err)
-		}
-
-		for results.Next(context.TODO()) {
-			var word models.Word
-			err := results.Decode(&word)
-			if err != nil {
-				panic(err)
+			if err == mongo.ErrNoDocuments {
+				return c.Status(404).JSON(fiber.Map{
+					"statusCode": 404,
+					"error":      "No se encontró la palabra",
+				})
 			}
-			words = append(words, word)
+			return c.Status(500).SendString(err.Error())
 		}
 
-		return c.JSON(&fiber.Map{
-			"word": words,
-		})
+		return c.JSON(result)
+	})
+
+	app.Get("/sugerencias", func(c *fiber.Ctx) error {
+		palabra := c.Query("palabra")
+		if palabra == "" {
+			return c.Status(400).SendString("Missing query parameter: palabra")
+		}
+
+		primeraLetra := string([]rune(palabra)[0])
+		coll := client.Database("gomongodb").Collection("words")
+		filter := bson.M{"WordText": bson.M{"$regex": "^" + primeraLetra}}
+		opts := options.Find().SetLimit(5)
+
+		cursor, err := coll.Find(context.TODO(), filter, opts)
+		if err != nil {
+			return c.Status(500).SendString(err.Error())
+		}
+		defer cursor.Close(context.TODO())
+
+		var results []models.Word
+		if err = cursor.All(context.TODO(), &results); err != nil {
+			return c.Status(500).SendString(err.Error())
+		}
+
+		if len(results) == 0 {
+			return c.Status(404).SendString("No se encontraron palabras")
+		}
+
+		return c.JSON(results)
 	})
 
 	app.Listen(":" + port)                                    //Se inicia el puerto

@@ -16,4 +16,90 @@
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
+    scrollbar-width: 0;
+}
+
+.container{
+    display: flex;
+    justify-content: center;
+}
+
+.textarea-container{
+    width: 670px;
+    height: 350px;
+    background: transparent;
+    border: 2px solid #FFF;
+    border-radius: 10px;
+    padding-inline: 2rem;
+    margin: 2rem 1rem;
+}
+
+h1{
+    font: normal normal 700 20px arial, helvetica, sans-serif;
+}
+
+textarea{
+    width: 100%;
+    height: 65%;
+    border-radius: 5px;
+    font: normal normal 500 16px arial, helvetica, sans-serif;
+    background: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.txt{
+    border: 1px solid #FFF;
+    height: 65%;
+    border-radius: 5px;
+    font: normal normal 500 16px arial, helvetica, sans-serif;
+}
+
+.suggestion:hover {
+    color: #FFF;
+    margin-bottom: 2.5px;
+    cursor: pointer;
+}
+
+textarea:focus{
+    border: 1px solid #000;
+    outline: none;
+}
+
+.buttons-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button{
+    margin-inline: 1rem;
+    background: #007bff;
+    color: #FFF;
+    border-radius: 10px;
+    height: 40px;
+    width: 100px;
+    border: none;
+    font: normal normal 500 14px arial, helvetica, sans-serif;
+    cursor: pointer;
+}
+
+.suggestion-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.suggested-textarea{
+    width: 1440px;
+    height: 250px;
+    background: transparent;
+    border: 2px solid #FFF;
+    border-radius: 10px;
+    padding-inline: 2rem;
+    margin: 2rem 1rem;
+}
+
+.suggested-textarea textarea {
+    border: 1px solid #FFF;
 }
