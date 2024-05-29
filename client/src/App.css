@@ -12,6 +12,7 @@
 .body-container{
     width: calc(100vw);
     height: calc(100vh - 100px);
+    overflow-y: scroll;
     background: url(./assets/fondo_2.jpg);
     background-size: cover;
     background-position: center center;

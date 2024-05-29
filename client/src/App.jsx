@@ -46,7 +46,7 @@ function App() {
       return
     }
 
-    const response = await fetch(import.meta.env.VITE_API + `/buscar?palabra=${encodeURIComponent(wordForSearch)}`);
+    const response = await fetch(`/buscar?palabra=${encodeURIComponent(wordForSearch)}`);
     const data = await response.json();
     if(data.statusCode == 404) {
       toast.error(data.error);
@@ -57,7 +57,7 @@ function App() {
 
   const handleGetSuggestions = async (word) => {
     try {
-      const response = await fetch(import.meta.env.VITE_API + `/sugerencias?palabra=${encodeURIComponent(word)}`);
+      const response = await fetch(`/sugerencias?palabra=${encodeURIComponent(word)}`);
       if (!response.ok) {
         throw new Error('Error en la solicitud: ' + response.statusText);
       }
@@ -73,7 +73,7 @@ function App() {
   //PETICION PARA INSERTAR UNA PALABRA A BD
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const response = await fetch(import.meta.env.VITE_API + '/palabra', {
+    const response = await fetch('/palabra', {
       method: 'POST',
       body: JSON.stringify({WordText: word, Translation: translation}),
       headers: {
